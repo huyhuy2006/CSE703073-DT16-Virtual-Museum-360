@@ -1,0 +1,134 @@
+﻿# =========================================================
+# CSE703073 - DT-16 Virtual Museum 360
+# Git Ignore
+# =========================================================
+
+# ---------------------------------------------------------
+# Environment / secrets
+# ---------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------------
+# OS files
+# ---------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------
+# IDE / Editor
+# ---------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+.idea/
+*.swp
+*.swo
+
+# ---------------------------------------------------------
+# Logs
+# ---------------------------------------------------------
+*.log
+logs/
+storage/logs/
+
+# ---------------------------------------------------------
+# Laravel / PHP
+# ---------------------------------------------------------
+backend/vendor/
+backend/node_modules/
+backend/.phpunit.result.cache
+
+backend/storage/app/*
+!backend/storage/app/.gitignore
+
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/framework/testing/*
+
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitignore
+
+# ---------------------------------------------------------
+# Frontend - Vue / Vite / Node
+# ---------------------------------------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------------------------------------------------------
+# Python
+# ---------------------------------------------------------
+python-service/.venv/
+python-service/venv/
+python-service/__pycache__/
+python-service/**/__pycache__/
+python-service/*.py[cod]
+python-service/.pytest_cache/
+python-service/.mypy_cache/
+python-service/.ruff_cache/
+
+# Python generated data
+python-service/data/processed/*
+!python-service/data/processed/.gitkeep
+
+# ---------------------------------------------------------
+# Database dumps / temporary exports
+# ---------------------------------------------------------
+*.sql.gz
+*.dump
+*.bak
+
+# ---------------------------------------------------------
+# Large media files generated locally
+# ---------------------------------------------------------
+*.tmp
+*.temp
+
+# Do not commit local raw media cache
+media-cache/
+panorama-cache/
+thumbnail-cache/
+
+# ---------------------------------------------------------
+# Coverage / test output
+# ---------------------------------------------------------
+coverage/
+htmlcov/
+.pytest_cache/
+
+# ---------------------------------------------------------
+# Docker
+# ---------------------------------------------------------
+docker/volumes/
+docker/data/
+
+# ---------------------------------------------------------
+# Temporary project files
+# ---------------------------------------------------------
+.tmp/
+temp/
+tmp/
+
+# ---------------------------------------------------------
+# Local uploaded media
+# ---------------------------------------------------------
+backend/storage/app/public/uploads/
+backend/storage/app/public/panoramas/
+backend/storage/app/public/audio/
+
+# ---------------------------------------------------------
+# Local OS / generated files
+# ---------------------------------------------------------
+*.pid
+*.seed
