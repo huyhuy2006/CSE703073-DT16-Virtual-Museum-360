@@ -1,0 +1,50 @@
+:root {
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 16px;
+  --spacing-4: 24px;
+  --spacing-5: 40px;
+
+  --radius: 12px;
+
+  --font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+  --font-size-large: 22px;
+
+  --line-height: 1.55;
+}
+
+[data-theme="sang"] {
+  --bg: #ffffff;
+  --bg-soft: #f2f5f9;
+  --text: #16202b;
+  --text-muted: #566274;
+
+  --primary: #1c7293;
+  --primary-dark: #14556e;
+  --accent: #b85042;
+
+  --border: #d5dde6;
+  --shadow: 0 4px 16px rgba(22, 32, 43, 0.12);
+}
+
+[data-theme="toi"] {
+  --bg: #10161d;
+  --bg-soft: #1a2330;
+  --text: #e8edf3;
+  --text-muted: #a3afbe;
+
+  --primary: #4fb3d9;
+  --primary-dark: #79c9e8;
+  --accent: #e58c7f;
+
+  --border: #2a3542;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
