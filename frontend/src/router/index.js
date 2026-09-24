@@ -3,6 +3,8 @@ import {
   createWebHistory,
 } from 'vue-router'
 
+import LoginView from '../views/LoginView.vue'
+
 const routes = [
   {
     path: '/',
@@ -34,6 +36,12 @@ const routes = [
     name: '404',
     component: () => import('../views/NotFoundView.vue'),
   },
+
+  {
+  path: '/dang-nhap',
+  name: 'login',
+  component: LoginView,
+},
 ]
 
 const router = createRouter({
