@@ -1,62 +1,62 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const http = axios.create({
-  baseURL: '/api',
+const envBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
+
+const normalizedBaseUrl = envBaseUrl.endsWith('/v1')
+  ? envBaseUrl
+  : `${envBaseUrl.replace(/\/$/, '')}/v1`;
+
+const api = axios.create({
+  baseURL: normalizedBaseUrl,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
-  withXSRFToken: true,
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-})
+});
 
-export async function initCsrf() {
-  await axios.get('/sanctum/csrf-cookie', {
-    withCredentials: true,
-  })
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('dt16_token');
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      error.response?.status === 401
+      && !error.config?.url?.includes('/auth/login')
+    ) {
+      localStorage.removeItem('dt16_token');
+      localStorage.removeItem('dt16_user');
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export function getStoredUser() {
+  const rawUser = localStorage.getItem('dt16_user');
+
+  if (!rawUser) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawUser);
+  } catch {
+    localStorage.removeItem('dt16_user');
+    return null;
+  }
 }
 
-export async function login(email, password) {
-  await initCsrf()
-
-  const response = await http.post('/v1/auth/login', {
-    email,
-    password,
-  })
-
-  return response.data
+export function clearAuth() {
+  localStorage.removeItem('dt16_token');
+  localStorage.removeItem('dt16_user');
 }
 
-export async function getCurrentUser() {
-  const response = await http.get('/v1/auth/me')
-
-  return response.data
-}
-
-export async function logout() {
-  const response = await http.post('/v1/auth/logout')
-
-  return response.data
-}
-
-export async function checkAdmin() {
-  const response = await http.get('/v1/admin/check')
-
-  return response.data
-}
-
-export async function getMuseumSpaces() {
-  const response = await http.get('/v1/spaces')
-
-  return response.data
-}
-
-export async function getTours() {
-  const response = await http.get('/v1/tours')
-
-  return response.data
-}
-
-export default http
+export default api;

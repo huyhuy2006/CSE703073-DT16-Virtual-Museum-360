@@ -1,4 +1,4 @@
-import {
+﻿import {
   createRouter,
   createWebHistory,
 } from 'vue-router'
@@ -32,16 +32,30 @@ const routes = [
     component: () => import('../views/GuestbookView.vue'),
   },
   {
+    path: '/dang-nhap',
+    name: 'login',
+    component: LoginView,
+  },
+  {
+    path: '/login',
+    name: 'login-en',
+    component: LoginView,
+  },
+  {
+    path: '/tour-sessions',
+    name: 'tour-sessions',
+    component: () => import('../views/TourSessionsView.vue'),
+  },
+  {
+    path: '/booking/:sessionId',
+    name: 'booking',
+    component: () => import('../views/BookingView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     component: () => import('../views/NotFoundView.vue'),
   },
-
-  {
-  path: '/dang-nhap',
-  name: 'login',
-  component: LoginView,
-},
 ]
 
 const router = createRouter({

@@ -1,365 +1,170 @@
-<script setup>
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import {
-  checkAdmin,
-  getCurrentUser,
-  login,
-  logout,
-} from '../services/api'
+﻿<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import api from '../services/api';
 
-const router = useRouter()
+const router = useRouter();
 
-const email = ref('')
-const password = ref('')
+const email = ref('');
+const password = ref('');
+const loading = ref(false);
+const errorMessage = ref('');
 
-const loading = ref(false)
-const errorMessage = ref('')
-const successMessage = ref('')
+async function submitLogin() {
+  errorMessage.value = '';
 
-const currentUser = ref(null)
-const adminResult = ref(null)
-
-async function loadCurrentUser() {
-  try {
-    const result = await getCurrentUser()
-    currentUser.value = result.user
-  } catch {
-    currentUser.value = null
+  if (!email.value || !password.value) {
+    errorMessage.value = 'Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ email vÃ  máº­t kháº©u.';
+    return;
   }
-}
 
-async function handleLogin() {
-  loading.value = true
-  errorMessage.value = ''
-  successMessage.value = ''
-  adminResult.value = null
+  loading.value = true;
 
   try {
-    const result = await login(
-      email.value.trim(),
-      password.value
-    )
+    const response = await api.post('/auth/login', {
+      email: email.value.trim(),
+      password: password.value,
+    });
 
-    currentUser.value = result.user
-    successMessage.value = result.message
+    localStorage.setItem('dt16_token', response.data.token);
+    localStorage.setItem(
+      'dt16_user',
+      JSON.stringify(response.data.user)
+    );
 
-    password.value = ''
-
-    await router.push('/')
+    await router.push('/tour-sessions');
   } catch (error) {
-    const message = error?.response?.data?.message
-
     errorMessage.value =
-      message || 'Dang nhap that bai.'
+      error.response?.data?.message
+      || 'ÄÄƒng nháº­p tháº¥t báº¡i.';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
-
-async function handleLogout() {
-  errorMessage.value = ''
-  successMessage.value = ''
-  adminResult.value = null
-
-  try {
-    const result = await logout()
-
-    currentUser.value = null
-    successMessage.value = result.message
-  } catch (error) {
-    errorMessage.value =
-      error?.response?.data?.message ||
-      'Dang xuat that bai.'
-  }
-}
-
-async function handleAdminCheck() {
-  errorMessage.value = ''
-  adminResult.value = null
-
-  try {
-    adminResult.value = await checkAdmin()
-  } catch (error) {
-    const status = error?.response?.status
-
-    if (status === 403) {
-      adminResult.value = {
-        message: 'Tai khoan khong co quyen admin.',
-        status: 403,
-      }
-      return
-    }
-
-    if (status === 401) {
-      adminResult.value = {
-        message: 'Chua dang nhap.',
-        status: 401,
-      }
-      return
-    }
-
-    errorMessage.value =
-      error?.response?.data?.message ||
-      'Khong the kiem tra quyen admin.'
-  }
-}
-
-onMounted(loadCurrentUser)
 </script>
 
 <template>
-  <section class="login-page">
-    <div class="login-card">
-      <header class="login-header">
-        <p class="eyebrow">
-          DT-16 VIRTUAL MUSEUM 360
-        </p>
-
-        <h1>Đăng nhập</h1>
-
+  <main class="login-page">
+    <section class="login-card">
+      <div class="login-header">
+        <p class="eyebrow">DT-16</p>
+        <h1>ÄÄƒng nháº­p</h1>
         <p>
-          Xác thực tài khoản để sử dụng các chức năng cá nhân
-          và khu vực quản trị.
+          Báº£o tÃ ng áº£o vÃ  tour tham quan 360Â°
         </p>
-      </header>
+      </div>
 
-      <form
-        class="login-form"
-        @submit.prevent="handleLogin"
-      >
-        <label for="email">
-          Email
-        </label>
-
+      <form @submit.prevent="submitLogin">
+        <label for="email">Email</label>
         <input
           id="email"
           v-model="email"
           type="email"
-          autocomplete="email"
-          placeholder="admin@dt16.local"
-          required
+          autocomplete="username"
+          placeholder="Nháº­p email"
         />
 
-        <label for="password">
-          Mật khẩu
-        </label>
-
+        <label for="password">Máº­t kháº©u</label>
         <input
           id="password"
           v-model="password"
           type="password"
           autocomplete="current-password"
-          required
+          placeholder="Nháº­p máº­t kháº©u"
         />
+
+        <p
+          v-if="errorMessage"
+          class="error-message"
+        >
+          {{ errorMessage }}
+        </p>
 
         <button
           type="submit"
           :disabled="loading"
         >
-          {{ loading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
+          {{ loading ? 'Äang Ä‘Äƒng nháº­p...' : 'ÄÄƒng nháº­p' }}
         </button>
       </form>
-
-      <p
-        v-if="successMessage"
-        class="message success"
-      >
-        {{ successMessage }}
-      </p>
-
-      <p
-        v-if="errorMessage"
-        class="message error"
-      >
-        {{ errorMessage }}
-      </p>
-
-      <div
-        v-if="currentUser"
-        class="account-panel"
-      >
-        <h2>Phiên hiện tại</h2>
-
-        <dl>
-          <div>
-            <dt>ID</dt>
-            <dd>{{ currentUser.id }}</dd>
-          </div>
-
-          <div>
-            <dt>Họ tên</dt>
-            <dd>{{ currentUser.name }}</dd>
-          </div>
-
-          <div>
-            <dt>Email</dt>
-            <dd>{{ currentUser.email }}</dd>
-          </div>
-
-          <div>
-            <dt>Role</dt>
-            <dd>{{ currentUser.role }}</dd>
-          </div>
-        </dl>
-
-        <div class="action-row">
-          <button
-            type="button"
-            @click="handleAdminCheck"
-          >
-            Kiểm tra quyền Admin
-          </button>
-
-          <button
-            type="button"
-            class="secondary"
-            @click="handleLogout"
-          >
-            Đăng xuất
-          </button>
-        </div>
-
-        <pre
-          v-if="adminResult"
-          class="result-box"
-        >{{ JSON.stringify(adminResult, null, 2) }}</pre>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 </template>
 
 <style scoped>
 .login-page {
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 32px 20px;
+  padding: 32px 16px;
+  background: #f4f6f8;
 }
 
 .login-card {
-  width: min(100%, 520px);
+  width: min(440px, 100%);
   padding: 32px;
-  border: 1px solid var(--border-color, #d8dee9);
-  border-radius: 20px;
-  background: var(--surface-color, #ffffff);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.08);
 }
 
 .login-header {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .eyebrow {
   margin: 0 0 8px;
-  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
 }
 
-.login-header h1 {
-  margin: 0 0 10px;
+h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
 }
 
-.login-header p {
+.login-header p:last-child {
   margin: 0;
-  line-height: 1.6;
+  color: #667085;
 }
 
-.login-form {
+form {
   display: grid;
   gap: 10px;
 }
 
-.login-form label {
+label {
+  margin-top: 8px;
   font-weight: 600;
-  margin-top: 6px;
 }
 
-.login-form input {
+input {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--border-color, #d8dee9);
-  border-radius: 10px;
-  background: transparent;
-  color: inherit;
   box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  font: inherit;
 }
 
-.login-form button,
-.action-row button {
-  margin-top: 10px;
-  padding: 12px 16px;
+button {
+  margin-top: 14px;
   border: 0;
   border-radius: 10px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: 700;
 }
 
-.login-form button:disabled {
-  opacity: 0.6;
+button:disabled {
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
-.message {
-  margin: 18px 0 0;
-  padding: 12px 14px;
-  border-radius: 10px;
-}
-
-.success {
-  border: 1px solid #78c091;
-}
-
-.error {
-  border: 1px solid #d77a7a;
-}
-
-.account-panel {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-color, #d8dee9);
-}
-
-.account-panel h2 {
-  margin-top: 0;
-}
-
-.account-panel dl {
-  display: grid;
-  gap: 12px;
-}
-
-.account-panel dl > div {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 12px;
-}
-
-.account-panel dt {
-  font-weight: 700;
-}
-
-.account-panel dd {
-  margin: 0;
-  word-break: break-word;
-}
-
-.action-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.secondary {
-  opacity: 0.85;
-}
-
-.result-box {
-  margin-top: 16px;
-  padding: 14px;
-  overflow-x: auto;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.05);
+.error-message {
+  margin: 8px 0 0;
+  color: #b42318;
 }
 </style>
+
