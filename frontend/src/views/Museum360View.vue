@@ -1,167 +1,118 @@
 <script setup>
-import { ref } from 'vue'
-
-const selectedSpace = ref(1)
-const selectedLanguage = ref(1)
+import PanoramaPreview from '../components/PanoramaPreview.vue'
 
 const spaces = [
   {
     id: 1,
-    code: 'SPACE-001',
-    title: 'Không gian trưng bày 01',
+    title: 'Không gian 01',
+    description:
+      'Điểm bắt đầu của hành trình khám phá bảo tàng ảo.',
   },
   {
     id: 2,
-    code: 'SPACE-002',
-    title: 'Không gian trưng bày 02',
+    title: 'Không gian 02',
+    description:
+      'Khu vực dành cho lớp thông tin và hiện vật tương tác.',
   },
   {
     id: 3,
-    code: 'SPACE-003',
-    title: 'Không gian trưng bày 03',
+    title: 'Không gian 03',
+    description:
+      'Khu vực kết nối tiếp các tuyến tham quan.',
+  },
+]
+
+const hotspots = [
+  {
+    title: 'Điểm thông tin hiện vật',
+    description:
+      'Vị trí này sẽ liên kết tới bảng artifacts và hotspots.',
+  },
+  {
+    title: 'Điểm chuyển không gian',
+    description:
+      'Vị trí này sẽ liên kết tới bảng space_transitions.',
+  },
+  {
+    title: 'Nội dung thuyết minh',
+    description:
+      'Vị trí này sẽ liên kết tới audio_narrations theo ngôn ngữ.',
   },
 ]
 </script>
 
 <template>
-  <section class="page">
+  <section class="page-section">
     <div class="container">
-      <header>
-        <span class="badge">
-          THAM QUAN 360°
-        </span>
+      <span class="eyebrow">
+        Tham quan tự do
+      </span>
 
-        <h1>
-          Không gian bảo tàng
-        </h1>
+      <h1 class="section-heading" style="margin-top: 12px;">
+        Không gian bảo tàng 360°
+      </h1>
 
-        <p class="hero__text">
-          Khung trình xem panorama 360°,
-          hotspot hiện vật và chuyển cảnh
-          giữa các không gian.
-        </p>
-      </header>
+      <p class="section-description">
+        Đây là giao diện nền cho trải nghiệm panorama,
+        hotspot hiện vật, chuyển cảnh và thuyết minh đa ngôn ngữ.
+      </p>
 
-      <div class="section">
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-          "
-        >
-          <label>
-            Không gian:
-
-            <select v-model="selectedSpace">
-              <option
-                v-for="space in spaces"
-                :key="space.id"
-                :value="space.id"
-              >
-                {{ space.title }}
-              </option>
-            </select>
-          </label>
-
-          <label>
-            Ngôn ngữ:
-
-            <select v-model="selectedLanguage">
-              <option :value="1">
-                Tiếng Việt
-              </option>
-
-              <option :value="2">
-                English
-              </option>
-
-              <option :value="3">
-                Français
-              </option>
-            </select>
-          </label>
-        </div>
-
-        <div class="viewer">
-          <div class="viewer__placeholder">
-            <h2>
-              Panorama 360° sẽ hiển thị tại đây
-            </h2>
-
-            <p>
-              Space đang chọn:
-              <strong>
-                {{
-                  spaces.find(
-                    (space) =>
-                      space.id === selectedSpace,
-                  )?.title
-                }}
-              </strong>
-            </p>
-
-            <p>
-              Đây là placeholder cho engine
-              panorama thật sẽ tích hợp ở bước
-              triển khai chức năng 360°.
-            </p>
-
-            <div
-              style="
-                display: flex;
-                justify-content: center;
-                gap: 12px;
-                flex-wrap: wrap;
-                margin-top: 20px;
-              "
-            >
-              <button
-                class="button"
-                type="button"
-              >
-                Hotspot hiện vật
-              </button>
-
-              <button
-                class="button button--secondary"
-                type="button"
-              >
-                Chuyển không gian
-              </button>
-            </div>
-          </div>
-        </div>
+      <div style="margin-bottom: 24px;">
+        <PanoramaPreview
+          title="Không gian bảo tàng 360°"
+          description="Khung panorama sẵn sàng nhận ảnh 360° từ backend."
+        />
       </div>
 
-      <section class="section">
-        <h2>
-          Danh sách không gian
-        </h2>
-
-        <div class="card-grid">
-          <article
-            v-for="space in spaces"
-            :key="space.id"
-            class="card"
-          >
+      <div class="luoi luoi-3">
+        <article
+          v-for="space in spaces"
+          :key="space.id"
+          class="the"
+        >
+          <div class="the-noi-dung">
             <span class="badge">
-              {{ space.code }}
+              Không gian {{ space.id }}
             </span>
 
-            <h3>
+            <h2 class="the-tieu-de" style="margin-top: 12px;">
               {{ space.title }}
-            </h3>
+            </h2>
 
-            <button
-              class="button"
-              type="button"
-              style="margin-top: 12px"
-              @click="selectedSpace = space.id"
-            >
-              Xem không gian
-            </button>
+            <p class="the-mo-ta">
+              {{ space.description }}
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <section style="margin-top: 48px;">
+        <h2 class="section-heading">
+          Điểm tương tác trong panorama
+        </h2>
+
+        <div class="hotspot-list">
+          <article
+            v-for="hotspot in hotspots"
+            :key="hotspot.title"
+            class="hotspot-item"
+          >
+            <span class="hotspot-dot" aria-hidden="true"></span>
+
+            <div>
+              <strong>
+                {{ hotspot.title }}
+              </strong>
+
+              <p
+                style="
+                  margin: 4px 0 0;
+                  color: var(--mau-chu-nhat);
+                "
+              >
+                {{ hotspot.description }}
+              </p>
+            </div>
           </article>
         </div>
       </section>

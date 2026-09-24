@@ -1,50 +1,141 @@
 :root {
-  --spacing-1: 4px;
-  --spacing-2: 8px;
-  --spacing-3: 16px;
-  --spacing-4: 24px;
-  --spacing-5: 40px;
+  --kc-1: 4px;
+  --kc-2: 8px;
+  --kc-3: 16px;
+  --kc-4: 24px;
+  --kc-5: 40px;
 
-  --radius: 12px;
+  --bo-goc: 14px;
+  --bo-goc-nho: 10px;
+  --bo-goc-lon: 20px;
 
-  --font-family:
-    "Segoe UI",
+  --chu-than:
+    Inter,
+    Roboto,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
 
-  --font-size-body: 16px;
-  --font-size-small: 14px;
-  --font-size-large: 22px;
+  --co-chu-than: 16px;
+  --co-chu-nho: 14px;
+  --co-chu-lon: 20px;
+  --co-chu-rat-lon: 34px;
 
-  --line-height: 1.55;
+  --do-cao-dong: 1.6;
+
+  --container-max: 1280px;
+  --header-height: 72px;
+  --transition-fast: 160ms ease;
+  --transition-normal: 240ms ease;
 }
 
 [data-theme="sang"] {
-  --bg: #ffffff;
-  --bg-soft: #f2f5f9;
-  --text: #16202b;
-  --text-muted: #566274;
+  --mau-nen: #f7fafc;
+  --mau-nen-phu: #ffffff;
+  --mau-nen-alt: #eef4f7;
 
-  --primary: #1c7293;
-  --primary-dark: #14556e;
-  --accent: #b85042;
+  --mau-chu: #16202b;
+  --mau-chu-nhat: #52606d;
+  --mau-chu-muted: #6b7785;
 
-  --border: #d5dde6;
-  --shadow: 0 4px 16px rgba(22, 32, 43, 0.12);
+  --mau-chinh: #1c7293;
+  --mau-chinh-dam: #14556e;
+  --mau-chinh-nhat: #dff2f8;
+
+  --mau-nhan: #b85042;
+  --mau-nhan-nhat: #fce9e5;
+
+  --mau-vien: #d6e0e7;
+  --mau-vien-dam: #b8c6d0;
+
+  --mau-success: #237a57;
+  --mau-warning: #996c00;
+  --mau-danger: #b42318;
+
+  --do-bong: 0 8px 24px rgba(22, 32, 43, 0.08);
+  --do-bong-nho: 0 2px 8px rgba(22, 32, 43, 0.06);
 }
 
 [data-theme="toi"] {
-  --bg: #10161d;
-  --bg-soft: #1a2330;
-  --text: #e8edf3;
-  --text-muted: #a3afbe;
+  --mau-nen: #10161d;
+  --mau-nen-phu: #17212b;
+  --mau-nen-alt: #1a2330;
 
-  --primary: #4fb3d9;
-  --primary-dark: #79c9e8;
-  --accent: #e58c7f;
+  --mau-chu: #e8edf3;
+  --mau-chu-nhat: #b3bfca;
+  --mau-chu-muted: #8f9daa;
 
-  --border: #2a3542;
-  --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --mau-chinh: #4fb3d9;
+  --mau-chinh-dam: #79c9e8;
+  --mau-chinh-nhat: #193746;
+
+  --mau-nhan: #e58c7f;
+  --mau-nhan-nhat: #452a26;
+
+  --mau-vien: #2d3946;
+  --mau-vien-dam: #40505f;
+
+  --mau-success: #58b58c;
+  --mau-warning: #e0b84f;
+  --mau-danger: #ff8d84;
+
+  --do-bong: 0 12px 28px rgba(0, 0, 0, 0.28);
+  --do-bong-nho: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--mau-nen);
+  color: var(--mau-chu);
+  font-family: var(--chu-than);
+  font-size: var(--co-chu-than);
+  line-height: var(--do-cao-dong);
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+:focus-visible {
+  outline: 3px solid var(--mau-nhan);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--mau-chinh);
+  color: #ffffff;
 }

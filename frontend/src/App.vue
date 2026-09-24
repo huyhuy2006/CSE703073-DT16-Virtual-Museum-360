@@ -1,59 +1,24 @@
 <script setup>
-import ThemeToggle from './components/ThemeToggle.vue'
+import { RouterView } from 'vue-router'
+import SkipLink from './components/SkipLink.vue'
+import AppHeader from './components/AppHeader.vue'
+import AppFooter from './components/AppFooter.vue'
 </script>
 
 <template>
-  <a
-    class="skip-link"
-    href="#main-content"
-  >
-    Bo qua dieu huong
-  </a>
+  <div class="app-shell">
+    <SkipLink />
 
-  <header class="site-header">
-    <div class="container site-header__inner">
-      <RouterLink
-        class="brand"
-        to="/"
-      >
-        DT-16 Virtual Museum
-      </RouterLink>
+    <AppHeader />
 
-      <nav
-        class="nav"
-        aria-label="Dieu huong chinh"
-      >
-        <RouterLink to="/">
-          Trang chu
-        </RouterLink>
+    <main
+      id="main-content"
+      class="app-main"
+      tabindex="-1"
+    >
+      <RouterView />
+    </main>
 
-        <RouterLink to="/tham-quan-360">
-          Tham quan 360°
-        </RouterLink>
-
-        <RouterLink to="/tour/1">
-          Tour chu de
-        </RouterLink>
-
-        <ThemeToggle />
-      </nav>
-    </div>
-  </header>
-
-  <main id="main-content">
-    <RouterView />
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>
-        DT-16 — Bao tang ao va tour tham quan 360 do
-        tren nen web
-      </p>
-
-      <p>
-        Vue 3 + Vite | Laravel 11 | MySQL 8 | FastAPI
-      </p>
-    </div>
-  </footer>
+    <AppFooter />
+  </div>
 </template>

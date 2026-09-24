@@ -1,37 +1,56 @@
-import { ref, watchEffect } from 'vue'
+import { ref, watch } from 'vue'
 
-const STORAGE_KEY = 'dt16-theme'
+const KEY = 'dt16-theme'
+const AVAILABLE_THEMES = ['sang', 'toi']
 
-function getDefaultTheme() {
-  if (typeof window === 'undefined') {
-    return 'sang'
+function detectDefaultTheme() {
+  const saved = localStorage.getItem(KEY)
+
+  if (AVAILABLE_THEMES.includes(saved)) {
+    return saved
   }
 
-  return window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  ).matches
-    ? 'toi'
-    : 'sang'
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    return 'toi'
+  }
+
+  return 'sang'
 }
 
-const theme = ref(
-  localStorage.getItem(STORAGE_KEY) || getDefaultTheme(),
+const theme = ref(detectDefaultTheme())
+
+function applyTheme(value) {
+  const safeTheme = AVAILABLE_THEMES.includes(value)
+    ? value
+    : 'sang'
+
+  document.documentElement.dataset.theme = safeTheme
+  localStorage.setItem(KEY, safeTheme)
+
+  document.cookie = [
+    `dt16_theme=${safeTheme}`,
+    'path=/',
+    'max-age=31536000',
+    'samesite=lax',
+  ].join('; ')
+}
+
+watch(
+  theme,
+  (value) => {
+    applyTheme(value)
+  },
+  { immediate: true },
 )
 
 export function useTheme() {
-  watchEffect(() => {
-    document.documentElement.dataset.theme = theme.value
-    localStorage.setItem(STORAGE_KEY, theme.value)
-
-    document.cookie =
-      `theme=${theme.value}; path=/; max-age=31536000; samesite=lax`
-  })
-
   function toggle() {
-    theme.value =
-      theme.value === 'sang'
-        ? 'toi'
-        : 'sang'
+    theme.value = theme.value === 'sang'
+      ? 'toi'
+      : 'sang'
   }
 
   return {
