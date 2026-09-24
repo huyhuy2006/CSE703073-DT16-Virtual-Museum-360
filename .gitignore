@@ -132,3 +132,6 @@ backend/storage/app/public/audio/
 # ---------------------------------------------------------
 *.pid
 *.seed
+
+# Local database backups
+database/backup/
