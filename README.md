@@ -1,4 +1,3 @@
-@'
 # CSE703073 - ĐT-16: Bảo tàng ảo và Tour tham quan 360 độ
 
 ## 1. Thông tin dự án
