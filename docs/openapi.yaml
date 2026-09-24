@@ -1,0 +1,519 @@
+openapi: 3.0.3
+
+info:
+  title: "DT-16 Virtual Museum 360 API"
+  description: "API v0.1 cho hệ thống Bao tang ao va tour tham quan 360 do tren nen web"
+  version: "0.1.0"
+
+servers:
+  - url: "/api/v1"
+    description: "Local API"
+
+tags:
+  - name: Auth
+  - name: Languages
+  - name: Spaces
+  - name: Panoramas
+  - name: Artifacts
+  - name: Hotspots
+  - name: Tours
+  - name: Guestbook
+  - name: Collections
+  - name: Events
+
+paths:
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Dang ky tai khoan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Dang ky thanh cong
+        "409":
+          description: Email da ton tai
+        "422":
+          description: Du lieu khong hop le
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Dang nhap
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Dang nhap thanh cong
+        "401":
+          description: Thong tin dang nhap khong dung
+        "422":
+          description: Du lieu khong hop le
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Dang xuat
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Dang xuat thanh cong
+        "401":
+          description: Chua dang nhap
+
+  /me:
+    get:
+      tags: [Auth]
+      summary: Lay nguoi dung hien tai
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Thanh cong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Chua dang nhap
+
+  /languages:
+    get:
+      tags: [Languages]
+      summary: Danh sach ngon ngu
+      responses:
+        "200":
+          description: Thanh cong
+
+  /spaces:
+    get:
+      tags: [Spaces]
+      summary: Danh sach khong gian bao tang
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PerPage"
+      responses:
+        "200":
+          description: Thanh cong
+
+  /spaces/{spaceId}:
+    get:
+      tags: [Spaces]
+      summary: Chi tiet khong gian
+      parameters:
+        - $ref: "#/components/parameters/SpaceId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /spaces/{spaceId}/panoramas:
+    get:
+      tags: [Panoramas]
+      summary: Panorama cua khong gian
+      parameters:
+        - $ref: "#/components/parameters/SpaceId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /panoramas/{panoramaId}:
+    get:
+      tags: [Panoramas]
+      summary: Chi tiet panorama
+      parameters:
+        - $ref: "#/components/parameters/PanoramaId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /panoramas/{panoramaId}/hotspots:
+    get:
+      tags: [Hotspots]
+      summary: Danh sach hotspot cua panorama
+      parameters:
+        - $ref: "#/components/parameters/PanoramaId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /panoramas/{panoramaId}/transitions:
+    get:
+      tags: [Panoramas]
+      summary: Cac diem chuyen canh cua panorama
+      parameters:
+        - $ref: "#/components/parameters/PanoramaId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /artifacts/{artifactId}:
+    get:
+      tags: [Artifacts]
+      summary: Chi tiet hien vat
+      parameters:
+        - $ref: "#/components/parameters/ArtifactId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /artifacts/{artifactId}/audio:
+    get:
+      tags: [Artifacts]
+      summary: Audio narration cua hien vat
+      parameters:
+        - $ref: "#/components/parameters/ArtifactId"
+        - name: language_id
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+        "422":
+          description: Tham so khong hop le
+
+  /hotspots/{hotspotId}:
+    get:
+      tags: [Hotspots]
+      summary: Chi tiet hotspot
+      parameters:
+        - $ref: "#/components/parameters/HotspotId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /tours:
+    get:
+      tags: [Tours]
+      summary: Danh sach tour
+      parameters:
+        - name: mode
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - free
+              - guided
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PerPage"
+      responses:
+        "200":
+          description: Thanh cong
+        "422":
+          description: Tham so khong hop le
+
+  /tours/{tourId}:
+    get:
+      tags: [Tours]
+      summary: Chi tiet tour
+      parameters:
+        - $ref: "#/components/parameters/TourId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /tours/{tourId}/stops:
+    get:
+      tags: [Tours]
+      summary: Cac diem dung cua tour
+      parameters:
+        - $ref: "#/components/parameters/TourId"
+      responses:
+        "200":
+          description: Thanh cong
+        "404":
+          description: Khong tim thay
+
+  /guestbook:
+    get:
+      tags: [Guestbook]
+      summary: Danh sach guestbook
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PerPage"
+      responses:
+        "200":
+          description: Thanh cong
+
+    post:
+      tags: [Guestbook]
+      summary: Them guestbook
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: "Chi chap nhan cac truong writable hop le theo schema database"
+      responses:
+        "201":
+          description: Tao thanh cong
+        "401":
+          description: Chua dang nhap
+        "422":
+          description: Du lieu khong hop le
+
+  /me/collections:
+    get:
+      tags: [Collections]
+      summary: Bo suu tap ca nhan
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Thanh cong
+        "401":
+          description: Chua dang nhap
+
+    post:
+      tags: [Collections]
+      summary: Them hien vat vao bo suu tap
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCollectionRequest"
+      responses:
+        "201":
+          description: Them thanh cong
+        "401":
+          description: Chua dang nhap
+        "404":
+          description: Khong tim thay hien vat
+        "409":
+          description: Hien vat da ton tai trong bo suu tap
+        "422":
+          description: Du lieu khong hop le
+
+  /me/collections/{artifactId}:
+    delete:
+      tags: [Collections]
+      summary: Xoa hien vat khoi bo suu tap
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/ArtifactId"
+      responses:
+        "204":
+          description: Xoa thanh cong
+        "401":
+          description: Chua dang nhap
+        "404":
+          description: Khong tim thay
+
+  /events:
+    post:
+      tags: [Events]
+      summary: Ghi nhan hanh vi tham quan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBehaviorEventRequest"
+      responses:
+        "201":
+          description: Ghi nhan thanh cong
+        "422":
+          description: Du lieu khong hop le
+
+components:
+
+  securitySchemes:
+
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+
+  parameters:
+
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 12
+
+    SpaceId:
+      name: spaceId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+    PanoramaId:
+      name: panoramaId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+    ArtifactId:
+      name: artifactId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+    HotspotId:
+      name: hotspotId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+    TourId:
+      name: tourId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+  schemas:
+
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        preferred_language_id:
+          type: integer
+          nullable: true
+        is_active:
+          type: boolean
+
+    CreateCollectionRequest:
+      type: object
+      required:
+        - artifact_id
+      properties:
+        artifact_id:
+          type: integer
+          minimum: 1
+
+    CreateBehaviorEventRequest:
+      type: object
+      required:
+        - session_id
+        - event_type
+      properties:
+        session_id:
+          type: string
+          maxLength: 120
+        event_type:
+          type: string
+          maxLength: 100
+        user_id:
+          type: integer
+          nullable: true
+        tour_id:
+          type: integer
+          nullable: true
+        museum_space_id:
+          type: integer
+          nullable: true
+        panorama_id:
+          type: integer
+          nullable: true
+        hotspot_id:
+          type: integer
+          nullable: true
+        artifact_id:
+          type: integer
+          nullable: true
+        occurred_at:
+          type: string
+          format: date-time
+          nullable: true
